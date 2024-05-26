@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .sideNav {
+        --tw-gradient-from: linear-gradient(to bottom, #75757E 0%, #30292F 100%);
+    }
+}
+
+:root{
+    --text-color: white;
+    --thead-color: #7E767D;
+}
+
+* {
+    margin: 0;
+    font-size: 1rem;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings: "slnt" 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

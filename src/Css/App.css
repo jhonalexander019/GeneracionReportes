@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+nav {
+    height: 100vh;
+    align-items: center;
+    background: linear-gradient(to bottom, #75757E 0%, #30292F 100%);
+}
+
+nav > ul {
+    padding: 0;
+    list-style: none;
+    width: inherit;
+}
+
+nav > ul > li {
+    list-style-type: none;
+    padding: 0 20px 10px 0;
+
+}
+
+nav > ul > li > a {
+    text-decoration: none;
+    display: flex;
+    width: 100%;
+    height: 8vh;
+    color: white;
+    align-items: center;
+}
+
+nav > ul > li > a > svg {
+    width: 3rem;
+}
+
+
+.circle {
+    position: absolute;
+    transition: top 1s ease-out;
+    z-index: 1;
+}
+

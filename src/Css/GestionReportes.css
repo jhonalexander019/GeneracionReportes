@@ -1,0 +1,15 @@
+.content{
+    display: flex;
+}
+
+thead > tr > th{
+    color: var(--text-color);
+    font-weight: 400;
+    background-color: var(--thead-color);
+}
+
+.actions{
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
