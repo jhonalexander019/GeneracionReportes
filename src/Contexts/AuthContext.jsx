@@ -1,54 +1,69 @@
-import { createContext, useState, useContext, useEffect } from "react";
-import { decodeJwt } from "jose";
+import { createContext, useState, useContext, useEffect, useRef } from "react";
 import { refreshAccessToken } from "../Util/Services";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken") || null); // Estado para almacenar el token de acceso
-    const [refreshToken, setRefreshToken] = useState(localStorage.getItem("refreshToken") || null); // Estado para almacenar el token de actualización
+    const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken") || null);
+    const [refreshToken, setRefreshToken] = useState(localStorage.getItem("refreshToken") || null);
+    const timeoutRef = useRef(null);
 
-    // Función para establecer los tokens de acceso y actualización
     const login = (accessToken, refreshToken) => {
         setAccessToken(accessToken);
         setRefreshToken(refreshToken);
-        localStorage.setItem("accessToken", accessToken); // Guardar el token de acceso en el almacenamiento local
-        localStorage.setItem("refreshToken", refreshToken); // Guardar el token de actualización en el almacenamiento local
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        resetInactivityTimeout();
     };
 
-    // Función para cerrar sesión y eliminar los tokens
     const logout = () => {
         setAccessToken(null);
         setRefreshToken(null);
-        localStorage.removeItem("accessToken"); // Eliminar el token de acceso del almacenamiento local
-        localStorage.removeItem("refreshToken"); // Eliminar el token de actualización del almacenamiento local
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        clearTimeout(timeoutRef.current);
     };
 
-    // Función para manejar la renovación del token de acceso
     const handleTokenRefresh = async () => {
         try {
             const newAccessToken = await refreshAccessToken(refreshToken);
             setAccessToken(newAccessToken);
+            console.log(newAccessToken);
+            localStorage.setItem("accessToken", newAccessToken);
         } catch (error) {
-            // Manejar errores de renovación de token
             console.error("Error refreshing access token:", error);
-            // En caso de error, también cerramos la sesión
             logout();
         }
     };
 
-    useEffect(() => {
-        // Comprobar el tiempo de expiración del token de acceso cada 14 minutos
-        const interval = setInterval(() => {
-            handleTokenRefresh();
-        },  1000); // 14 minutos * 60 segundos * 1000 milisegundos
+    const resetInactivityTimeout = () => {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+            logout();
+        }, 14 * 60 * 1000); // 14 minutos en milisegundos
+    };
 
-        // Limpia el intervalo cuando el componente se desmonta
-        return () => clearInterval(interval);
-    }, [accessToken]); // Solo ejecuta el efecto cuando cambia el token de acceso
+    useEffect(() => {
+        const events = ["mousemove", "keydown", "mousedown", "touchstart"];
+
+        const handleActivity = () => resetInactivityTimeout();
+
+        events.forEach(event => {
+            window.addEventListener(event, handleActivity);
+        });
+
+        resetInactivityTimeout();
+
+        return () => {
+            events.forEach(event => {
+                window.removeEventListener(event, handleActivity);
+            });
+            clearTimeout(timeoutRef.current);
+        };
+    }, []);
 
     return (
-        <AuthContext.Provider value={{ accessToken, refreshToken, login, logout }}>
+        <AuthContext.Provider value={{ accessToken, refreshToken, login, logout, handleTokenRefresh }}>
             {children}
         </AuthContext.Provider>
     );

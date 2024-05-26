@@ -50,7 +50,7 @@ const Table = ({ header, body, handleButtonClick, handleDeleteButtonClick, selec
                     <tr className="h-10">
                         {header.map((item, index) => (
                             <th key={index}
-                                className={`${index === 0 && item === 'ID' ? 'w-1.5' : 'w-40'}`}>
+                                className={` pl-5 ${index === 0 && item === 'ID' ? 'w-1.5' : 'w-40'}`}>
                                 {item}
                             </th>
                         ))}
@@ -62,7 +62,7 @@ const Table = ({ header, body, handleButtonClick, handleDeleteButtonClick, selec
                         {body.map((row, rowIndex) => (
                             <tr key={rowIndex} className="h-11 bg-transparent">
                                 {Object.values(filterRowData(row)).map((value, columnIndex) => (
-                                    <td className="pl-5" key={columnIndex}>{value}</td>
+                                    <td className="pl-5 text-left" key={columnIndex}>{value}</td>
                                 ))}
                                 <td>
                                     <div className="actions">

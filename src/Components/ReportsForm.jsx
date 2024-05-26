@@ -80,7 +80,7 @@ function ReportsForm({ handleSubmit, selectedRow }) {
                         value={reportData.Name}
                         onChange={handleChange}
                         required
-                        className="input input-bordered bg-white text-gray-700 disabled:bg-transparent disabled:text-gray-700 disabled:input-bordered"
+                        className="input input-bordered bg-white text-gray-700 disabled:bg-transparent disabled:text-gray-700 disabled:input-bordered autofill:text-black"
                         disabled={(!editReport && selectedRow)}
                     />
                 </div>
@@ -118,7 +118,7 @@ function ReportsForm({ handleSubmit, selectedRow }) {
                 <div className="flex justify-center">
                     <button
                         type="submit"
-                        className={`bg-[#413F54] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${(!editReport && selectedRow) ? 'hidden': ''}`}>
+                        className={`btn btn-neutral text-white font-bold py-2 px-4 rounded ${(!editReport && selectedRow) ? 'hidden': ''}`}>
                         {selectedRow ? 'Editar Reporte' : 'Crear Reporte'}
                     </button>
                 </div>

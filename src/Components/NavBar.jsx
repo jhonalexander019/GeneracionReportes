@@ -61,8 +61,8 @@ const NavBar = () => {
     }, [location.pathname, navigate]);
 
     return (
-        <nav className="relative flex items-center nav-bar sideNav" style={{clipPath: "url(#navClipPath)"}}>
-            <div className="circle" style={{top: `${circleTop}px`, right: '-39.5px'}}>
+        <nav className="relative flex items-center nav-bar h-screen" style={{clipPath: "url(#navClipPath)"}}>
+            <div className="circle hidden md:flex" style={{top: `${circleTop}px`, right: '-39.5px'}}>
                 <svg  xmlns="http://www.w3.org/2000/svg" width="65" height="99" viewBox="0 0 48 73"
                      fill="none">
                     <path

@@ -87,8 +87,6 @@ const Login = () => {
                                 className="input input-bordered bg-white"
                                 required/>
                             <label className="label">
-                                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                                {/*<a href="#" className="label-text-alt link link-hover">Forgot password?</a>*/}
                             </label>
                         </div>
                         {error && <p className="text-red-500">{error}</p>}
