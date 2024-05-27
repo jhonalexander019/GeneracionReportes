@@ -3,7 +3,6 @@ import React, {useContext, useEffect, useRef, useState} from "react";
 import {fetchExcelDownload, fetchPaginateReports, fetchReport} from "../Util/Services";
 import wrongLine from "../Util/SVG/wrongLine.svg";
 import {AuthContext} from "../Contexts/AuthContext";
-import Alerts from "../Util/Alerts";
 import doneLine from "../Util/SVG/doneLine.svg";
 
 function Reportes() {
@@ -116,8 +115,6 @@ function Reportes() {
             [header]: value
         }));
 
-        console.log(filterValues)
-
         // Establecer un nuevo temporizador para ejecutar la búsqueda después de 2 segundos
         if (timerRef) {
             clearTimeout(timerRef);
@@ -202,8 +199,6 @@ function Reportes() {
             })        // eslint-disable-next-line react-hooks/exhaustive-deps
 
         return () => {
-            // Limpiar la conexión websocket cuando el componente se desmonta
-            ws.close();
             // Limpiar el event listener cuando el componente se desmonte
             document.removeEventListener('mousedown', handleClickOutside);
         };
@@ -228,7 +223,6 @@ function Reportes() {
             addAlert('¡Error al Generar el Reporte!', 'error', wrongLine);
 
         })
-
     }
 
     const addAlert = (message, type, img) => {
@@ -238,7 +232,6 @@ function Reportes() {
     const removeAlert = () => {
         setAlert(null);
     };
-
 
 
     return (
