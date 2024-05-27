@@ -1,7 +1,9 @@
-import {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Link, useLocation, useNavigate  } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faFileArrowDown, faSliders } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faFileArrowDown, faSliders, faSignOut} from '@fortawesome/free-solid-svg-icons';
+import {AuthContext} from "../Contexts/AuthContext";
+import Login from "./Login";
 
 const calculateCircleTop = (menuItemElement) => {
     const menuItemRect = menuItemElement.getBoundingClientRect();
@@ -12,8 +14,10 @@ const calculateCircleTop = (menuItemElement) => {
 const NavBar = () => {
     const [circleTop, setCircleTop] = useState(-100); // Estado para la posición superior inicial del círculo (fuera de la vista)
     const [selectedOption, setSelectedOption] = useState(""); // Estado para almacenar la opción seleccionada
+    const { accessToken, logout } = useContext(AuthContext); // Obtiene la función logout del contexto de autenticación
     const location = useLocation();
     const navigate  = useNavigate ();
+    const [showLogin, setShowLogin] = useState(false);
 
 
     // Define los elementos del menú
@@ -60,8 +64,13 @@ const NavBar = () => {
         }
     }, [location.pathname, navigate]);
 
+
+    const handleToggleLogin = () => {
+            logout(); // Llama a la función logout para cerrar sesión
+    };
+
     return (
-        <nav className="relative flex items-center nav-bar h-screen" style={{clipPath: "url(#navClipPath)"}}>
+        <nav className="relative flex items-center nav-bar h-screen" style={{clipPath: "url(#   )"}}>
             <div className="circle hidden md:flex" style={{top: `${circleTop}px`, right: '-39.5px'}}>
                 <svg  xmlns="http://www.w3.org/2000/svg" width="65" height="99" viewBox="0 0 48 73"
                      fill="none">
@@ -80,9 +89,15 @@ const NavBar = () => {
                         </Link>
                     </li>
                 ))}
+                <li className={!accessToken ? 'hidden':''}>
+                    <Link to="/Home" onClick={handleToggleLogin} >
+                        <FontAwesomeIcon icon={faSignOut}/>
+                        Cerrar sesión
+                    </Link>
+                </li>
             </ul>
+
             <div className="content-below">
-                {/* Contenido debajo del nav */}
             </div>
         </nav>
     );

@@ -50,7 +50,7 @@ const Table = ({ header, body, handleButtonClick, handleDeleteButtonClick, selec
                     <tr className="h-10">
                         {header.map((item, index) => (
                             <th key={index}
-                                className={` pl-5 ${index === 0 && item === 'ID' ? 'w-1.5' : 'w-40'}`}>
+                                className={` text-left pl-5 ${index === 0 && item === 'ID' ? 'w-1.5' : 'w-40'}`}>
                                 {item}
                             </th>
                         ))}
@@ -65,7 +65,7 @@ const Table = ({ header, body, handleButtonClick, handleDeleteButtonClick, selec
                                     <td className="pl-5 text-left" key={columnIndex}>{value}</td>
                                 ))}
                                 <td>
-                                    <div className="actions">
+                                    <div className="flex gap-1 justify-center">
                                         <button onClick={() => handleButtonClick(rowIndex, row)}>
                                             <img
                                                 src={rowIndex === selectedButtonIndex ? eyeLineIcon : eyeGlyphIcon}

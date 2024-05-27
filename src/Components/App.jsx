@@ -14,7 +14,7 @@ function App() {
         if (isNavOpen) {
             setIsNavOpen(!isNavOpen);
         }
-    }, [location.pathname]);
+    }, [isNavOpen, location.pathname]);
 
     const toggleNav = () => {
         setIsNavOpen(!isNavOpen);

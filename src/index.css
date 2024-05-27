@@ -24,3 +24,9 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+thead > tr > th{
+    color: var(--text-color);
+    font-weight: 400;
+    background-color: var(--thead-color);
+}

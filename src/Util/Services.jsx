@@ -23,9 +23,9 @@ const refreshAccessToken = async (refresh_token) => {
     }
 };
 
-const fetchPaginateReports = async (page, accessToken, handleTokenRefresh) => {
+const fetchPaginateReports = async (page, pageSize, accessToken, handleTokenRefresh) => {
     try {
-        let [response] = await Promise.all([fetch(`https://back.reportmanagemet.software/reports?page=${page}&pageSize=10`, {
+        let [response] = await Promise.all([fetch(`https://back.reportmanagemet.software/reports?page=${page}&pageSize=${pageSize}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -112,4 +112,61 @@ const fetchDeleteReports = async (id, accessToken, handleTokenRefresh) => {
     }
 };
 
-export { refreshAccessToken, fetchPaginateReports, fetchCreateReports, fetchUpdateReports, fetchDeleteReports};
+const fetchReport = async (id, page, accessToken, handleTokenRefresh, filterValues) => {
+    try {
+        let queryParams = `page=${page}&limit=10&`;
+
+        // Agregar filtros a los parámetros de consulta si existen
+        if (filterValues) {
+            queryParams += Object.keys(filterValues)
+                .map(key => {
+                    if (filterValues[key]) {
+                        return `${encodeURIComponent(key)}=${encodeURIComponent(filterValues[key])}`;
+                    }
+                    return ''; // Si el valor del filtro es falso, devolver una cadena vacía
+                })
+                .filter(Boolean) // Filtrar los valores falsos
+                .join('&');
+        }
+
+        // Construir la URL con los parámetros de consulta
+        const url = `https://back.reportmanagemet.software/report/${id}?${queryParams}`;
+
+        let [response] = await Promise.all([fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })]);
+
+        if (response.status === 401) {
+            handleTokenRefresh();
+            await fetchPaginateReports(id, accessToken, handleTokenRefresh);
+        }
+
+        return response;
+    } catch (error) {
+        console.error('Error fetching report:', error);
+    }
+}
+
+const fetchExcelDownload = async (selectId, accessTokenPrefix, accessToken) => {
+    try {
+
+        let [response] = await Promise.all([fetch(`https://back.reportmanagemet.software/report/${selectId}/${accessTokenPrefix}/excel`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })]);
+
+        return response;
+        // Descargar el archivo o manejar la respuesta según sea necesario
+    } catch (error) {
+        console.error('Error downloading Excel file:', error);
+    }
+};
+
+
+export { refreshAccessToken, fetchPaginateReports, fetchCreateReports, fetchUpdateReports, fetchDeleteReports, fetchReport, fetchExcelDownload};
