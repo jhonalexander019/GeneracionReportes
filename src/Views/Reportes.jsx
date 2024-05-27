@@ -249,17 +249,37 @@ function Reportes() {
     }
 
     const addAlert = (message, type, img) => {
-        setAlert({ message, type, img, isVisible: true });
-        setProgress(0); // Reset the progress bar when a new alert is added
-
+        const newAlert = { message, type, img, isVisible: true };
+        setAlert(newAlert);
+        localStorage.setItem('alert', JSON.stringify(newAlert));
+        setProgress(0);
     };
 
     const removeAlert = () => {
         setAlert(null);
         setProgress(0); // Reset the progress bar when the alert is removed
+        localStorage.removeItem('alert');
 
     };
 
+    useEffect(() => {
+        const savedAlert = localStorage.getItem('alert');
+        const savedProgress = localStorage.getItem('progress');
+
+        if (savedAlert) {
+            setAlert(JSON.parse(savedAlert));
+        }
+
+        if (savedProgress) {
+            setProgress(Number(savedProgress));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (alert && alert.isVisible) {
+            localStorage.setItem('progress', progress);
+        }
+    }, [progress]);
 
     return (
         <div className="flex items-center mx-14 h-auto gap-4 md:flex-col py-12 md:py-0">
@@ -349,18 +369,22 @@ function Reportes() {
                 </div>
 
             </div>
-            <div className="fixed bottom-4 right-4 z-50 space-y-4">
-                {alert && alert.isVisible && (
-                    <div className={`alert alert-${alert.type} flex items-center justify-between`}>
-                        <img src={alert.img} alt="icon" className="w-6 h-6 mr-2"/>
-                        <span>{alert.message}</span>
-                        <div className="relative w-[20vw] ml-4 bg-gray-200 h-2 rounded">
-                            <div
-                                className="absolute top-0 left-0 h-full bg-green-500 rounded"
-                                style={{ width: `${progress}%` }}
-                            ></div>
-                        </div>
-                        {progress}%
+            <div className="mb-5 flex flex-col items-center">
+                {alert && (
+                    <div className="fixed bottom-4 right-4 z-50 space-y-4">
+                        {alert.isVisible && (
+                            <div className={`alert alert-${alert.type} flex items-center justify-between`}>
+                                <img src={alert.img} alt="icon" className="w-6 h-6 mr-2"/>
+                                <span>{alert.message}</span>
+                                <div className="relative w-[20vw] ml-4 bg-gray-200 h-2 rounded">
+                                    <div
+                                        className="absolute top-0 left-0 h-full bg-green-500 rounded"
+                                        style={{width: `${progress}%`}}
+                                    ></div>
+                                </div>
+                                {progress}%
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
