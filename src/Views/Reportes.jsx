@@ -164,7 +164,7 @@ function Reportes() {
                 window.location.href = message;
                     const timeoutId = setTimeout(() => {
                         removeAlert();
-                    }, 100000);
+                    }, 10000);
 
                 clearTimeout(timeoutId)
             } else {
@@ -217,15 +217,6 @@ function Reportes() {
         };
     }, []);
 
-    useEffect(() => {
-        if (alert) {
-            const timeoutId = setTimeout(() => {
-                removeAlert();
-            }, 5000);
-
-            return () => clearTimeout(timeoutId);
-        }
-    }, [alert]);
 
     // Función para verificar si una cadena es una URL válida
     function isValidURL(url) {
@@ -293,7 +284,7 @@ function Reportes() {
                             <label className="input input-bordered flex items-center gap-2 flex-grow">
                                 <input
                                     type="text"
-                                    className="text-white w-full"
+                                    className="text-gray-600 w-full"
                                     placeholder="Buscar Reporte"
                                     value={searchTerm}
                                     onChange={handleSearchChange}
