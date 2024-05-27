@@ -164,7 +164,7 @@ function Reportes() {
                 window.location.href = message;
                     const timeoutId = setTimeout(() => {
                         removeAlert();
-                    }, 10000);
+                    }, 5000);
 
                 clearTimeout(timeoutId)
             } else {
@@ -316,7 +316,7 @@ function Reportes() {
 
                 </div>
                 <div className=" overflow-x-auto mt-5 rounded-lg shadow-xl">
-                    {data.length > 0 && (
+
                         <table className="w-10/12 rounded-lg ">
                             <thead>
                             <tr className="h-10">
@@ -353,7 +353,6 @@ function Reportes() {
                             ))}
                             </tbody>
                         </table>
-                    )}
                 </div>
                 <div className="flex justify-center gap-2">
                     {renderPageButtons()}
