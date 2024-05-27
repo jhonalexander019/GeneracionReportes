@@ -130,10 +130,12 @@ function Reportes() {
                     }
                 })
                 .then((data) => {
-                    setHeaders(null);
-                    setData(null);
-                    setHeaders(Object.keys(data.results[0]));
-                    setData(data.results);
+                    if(data.results.length > 0){
+                        setHeaders(null);
+                        setData(null);
+                        setHeaders(Object.keys(data.results[0]));
+                        setData(data.results);
+                    }
                 })
                 .catch((error) => {
                     console.error("Error fetching reports:", error);
