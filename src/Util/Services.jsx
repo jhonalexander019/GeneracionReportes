@@ -150,10 +150,24 @@ const fetchReport = async (id, page, accessToken, handleTokenRefresh, filterValu
     }
 }
 
-const fetchExcelDownload = async (selectId, accessTokenPrefix, accessToken) => {
+const fetchExcelDownload = async (selectId, accessTokenPrefix, accessToken, filterValues) => {
     try {
+        let queryParams = `${selectId}/${accessTokenPrefix}/excel?`;
 
-        let [response] = await Promise.all([fetch(`https://back.reportmanagemet.software/report/${selectId}/${accessTokenPrefix}/excel`, {
+        // Agregar filtros a los parámetros de consulta si existen
+        if (filterValues) {
+            queryParams += Object.keys(filterValues)
+                .map(key => {
+                    if (filterValues[key]) {
+                        return `${encodeURIComponent(key)}=${encodeURIComponent(filterValues[key])}`;
+                    }
+                    return ''; // Si el valor del filtro es falso, devolver una cadena vacía
+                })
+                .filter(Boolean) // Filtrar los valores falsos
+                .join('&');
+        }
+
+        let [response] = await Promise.all([fetch(`https://back.reportmanagemet.software/report/${queryParams}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

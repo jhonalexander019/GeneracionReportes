@@ -20,6 +20,7 @@ function Reportes() {
     const [timerRef, setTimerRef] = useState(null);
     const [alert, setAlert] = useState(null);
     const [idSocket, setIdSocket] = useState(null);
+    const [progress, setProgress] = useState(0);
 
 
     useEffect(() => {
@@ -159,15 +160,27 @@ function Reportes() {
         ws.onmessage = function(event) {
             const message = event.data;
 
-            // Verificar si el mensaje es una URL
             if (isValidURL(message)) {
-                // Cambiar la ubicación de la ventana actual hacia la URL recibida
                 window.location.href = message;
+                    const timeoutId = setTimeout(() => {
+                        removeAlert();
+                    }, 100000);
 
-                // Remover todas las alertas una vez que se redirige a la nueva URL
-                removeAlert();
+                clearTimeout(timeoutId)
+            } else {
+                console.log(message)
+                const percentageMatch = message.match(/^(\d{1,3}(\.\d{1,2})?)%$/);
+                console.log(percentageMatch)
+
+                if (percentageMatch) {
+                    const percentage = parseInt(percentageMatch[1], 10);
+                    if (!isNaN(percentage)) {
+                        setProgress(percentage);
+                    }
+                }
             }
         };
+
 
         // ws.onerror = function(error) {
         //     console.log("WebSocket error:", error);
@@ -204,6 +217,16 @@ function Reportes() {
         };
     }, []);
 
+    useEffect(() => {
+        if (alert) {
+            const timeoutId = setTimeout(() => {
+                removeAlert();
+            }, 5000);
+
+            return () => clearTimeout(timeoutId);
+        }
+    }, [alert]);
+
     // Función para verificar si una cadena es una URL válida
     function isValidURL(url) {
         // Expresión regular para validar una URL
@@ -213,7 +236,7 @@ function Reportes() {
 
     const handleExcelDownload = () =>{
 
-        fetchExcelDownload(selectId, idSocket, accessToken)
+        fetchExcelDownload(selectId, idSocket, accessToken, filterValues)
             .then((data)=>{
                 if (data.ok)
                     addAlert('¡Generando Reporte!', 'success', doneLine);
@@ -227,10 +250,14 @@ function Reportes() {
 
     const addAlert = (message, type, img) => {
         setAlert({ message, type, img, isVisible: true });
+        setProgress(0); // Reset the progress bar when a new alert is added
+
     };
 
     const removeAlert = () => {
         setAlert(null);
+        setProgress(0); // Reset the progress bar when the alert is removed
+
     };
 
 
@@ -323,11 +350,17 @@ function Reportes() {
 
             </div>
             <div className="fixed bottom-4 right-4 z-50 space-y-4">
-                {alert && (
-                    <div key="alert" role="alert"
-                         className={`alert flex items-center text-white shadow-lg rounded transition-transform duration-500 ${alert.isVisible ? 'animate-slideIn' : 'animate-slideOut'} ${alert.type === 'success' ? 'alert-success bg-green-500' : 'alert-error bg-red-500'}`}>
-                        <img src={alert.img} alt={alert.message}/>
+                {alert && alert.isVisible && (
+                    <div className={`alert alert-${alert.type} flex items-center justify-between`}>
+                        <img src={alert.img} alt="icon" className="w-6 h-6 mr-2"/>
                         <span>{alert.message}</span>
+                        <div className="relative w-[20vw] ml-4 bg-gray-200 h-2 rounded">
+                            <div
+                                className="absolute top-0 left-0 h-full bg-green-500 rounded"
+                                style={{ width: `${progress}%` }}
+                            ></div>
+                        </div>
+                        {progress}%
                     </div>
                 )}
             </div>
